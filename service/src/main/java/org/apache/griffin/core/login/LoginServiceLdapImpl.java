@@ -91,7 +91,9 @@ public class LoginServiceLdapImpl implements LoginService {
 
             // verify password if different bind user is used
             if (!StringUtils.equals(username, bindAccount)) {
-                String userDN = getAttributeValue(userObject, "distinguishedName", toPrincipal(username));
+                //String userDN = getAttributeValue(userObject, "distinguishedName", toPrincipal(username));
+                //获取登录账号
+                String userDN = userObject.getNameInNamespace();
                 checkPassword(userDN, password);
             }
 
