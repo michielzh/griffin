@@ -110,11 +110,11 @@ under the License.
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>mysql</groupId>-->
-            <!--<artifactId>mysql-connector-java</artifactId>-->
-            <!--<version>${mysql.java.version}</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.java.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -231,14 +231,14 @@ under the License.
     </dependencies>
     <profiles>
         <!--if you need mysql, please uncomment mysql-connector-java -->
-        <!--<profile>-->
-            <!--<id>mysql</id>-->
-            <!--<activation>-->
-                <!--<property>-->
-                    <!--<name>mysql</name>-->
-                <!--</property>-->
-            <!--</activation>-->
-        <!--</profile>-->
+        <profile>
+            <id>mysql</id>
+            <activation>
+                <property>
+                    <name>mysql</name>
+                </property>
+            </activation>
+        </profile>
         <profile>
             <id>dev</id>
             <activation>
