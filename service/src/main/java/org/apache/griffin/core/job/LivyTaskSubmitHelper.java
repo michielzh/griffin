@@ -53,6 +53,8 @@ public class LivyTaskSubmitHelper {
     private static final Logger logger = LoggerFactory.getLogger(LivyTaskSubmitHelper.class);
 
     private static final String REQUEST_BY_HEADER = "X-Requested-By";
+
+    @Autowired
     private SparkSubmitJob sparkSubmitJob;
     private ConcurrentMap<Long, Integer> taskAppIdMap = new ConcurrentHashMap<>();
     // Current number of tasks
