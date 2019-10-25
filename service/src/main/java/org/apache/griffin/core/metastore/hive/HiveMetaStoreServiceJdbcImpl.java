@@ -19,6 +19,20 @@ under the License.
 
 package org.apache.griffin.core.metastore.hive;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.annotation.PostConstruct;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
@@ -34,13 +48,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.sql.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 @Service
 @Qualifier(value = "jdbcSvc")
@@ -48,7 +55,7 @@ import java.util.regex.Pattern;
 public class HiveMetaStoreServiceJdbcImpl implements HiveMetaStoreService {
 
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(HiveMetaStoreService.class);
+        .getLogger(HiveMetaStoreService.class);
 
     private static final String SHOW_TABLES_IN = "show tables in ";
 
@@ -183,17 +190,18 @@ public class HiveMetaStoreServiceJdbcImpl implements HiveMetaStoreService {
     }
 
     @Scheduled(fixedRateString =
-            "${cache.evict.hive.fixedRate.in.milliseconds}")
+        "${cache.evict.hive.fixedRate.in.milliseconds}")
     @CacheEvict(
-            cacheNames = "jdbcHive",
-            allEntries = true,
-            beforeInvocation = true)
+        cacheNames = "jdbcHive",
+        allEntries = true,
+        beforeInvocation = true)
     public void evictHiveCache() {
         LOGGER.info("Evict hive cache");
     }
 
     /**
      * Query Hive for Show tables or show databases, which will return List of String
+     *
      * @param sql sql string
      * @return
      */
@@ -241,6 +249,7 @@ public class HiveMetaStoreServiceJdbcImpl implements HiveMetaStoreService {
 
     /**
      * Get the Hive table location from hive table metadata string
+     *
      * @param tableMetadata hive table metadata string
      * @return Hive table location
      */
@@ -264,28 +273,28 @@ public class HiveMetaStoreServiceJdbcImpl implements HiveMetaStoreService {
     /**
      * Get the Hive table schema: column name, column type, column comment
      * The input String looks like following:
-     *
+     * <p>
      * CREATE TABLE `employee`(
-     *   `eid` int,
-     *   `name` string,
-     *   `salary` string,
-     *   `destination` string)
+     * `eid` int,
+     * `name` string,
+     * `salary` string,
+     * `destination` string)
      * COMMENT 'Employee details'
      * ROW FORMAT SERDE
-     *   'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'
+     * 'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'
      * WITH SERDEPROPERTIES (
-     *   'field.delim'='\t',
-     *   'line.delim'='\n',
-     *   'serialization.format'='\t')
+     * 'field.delim'='\t',
+     * 'line.delim'='\n',
+     * 'serialization.format'='\t')
      * STORED AS INPUTFORMAT
-     *   'org.apache.hadoop.mapred.TextInputFormat'
+     * 'org.apache.hadoop.mapred.TextInputFormat'
      * OUTPUTFORMAT
-     *   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+     * 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
      * LOCATION
-     *   'file:/user/hive/warehouse/employee'
+     * 'file:/user/hive/warehouse/employee'
      * TBLPROPERTIES (
-     *   'bucketing_version'='2',
-     *   'transient_lastDdlTime'='1562086077')
+     * 'bucketing_version'='2',
+     * 'transient_lastDdlTime'='1562086077')
      *
      * @param tableMetadata hive table metadata string
      * @return List of FieldSchema
@@ -309,9 +318,9 @@ public class HiveMetaStoreServiceJdbcImpl implements HiveMetaStoreService {
 
     /**
      * Parse one column string
-     *
+     * <p>
      * Input example:
-     *  `merch_date` string COMMENT 'this is merch process date'
+     * `merch_date` string COMMENT 'this is merch process date'
      *
      * @param colStr column string
      * @return
